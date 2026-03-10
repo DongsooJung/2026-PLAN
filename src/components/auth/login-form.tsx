@@ -35,7 +35,7 @@ export function LoginForm() {
         });
         if (error) throw error;
       }
-      router.push("/dashboard");
+      router.push("/converter");
       router.refresh();
     } catch (err) {
       setError(
