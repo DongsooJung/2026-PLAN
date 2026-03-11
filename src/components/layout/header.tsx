@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CreditCard, Building2 } from "lucide-react";
+import { CreditCard, Building2, Database } from "lucide-react";
 import { UserMenu } from "./user-menu";
 
 export function Header() {
@@ -25,6 +25,13 @@ export function Header() {
           >
             <Building2 className="h-5 w-5" />
             <span className="font-bold">실거래가</span>
+          </Link>
+          <Link
+            href="/dashboard/data-collect"
+            className={`flex items-center gap-2 ${pathname === "/dashboard/data-collect" ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+          >
+            <Database className="h-5 w-5" />
+            <span className="font-bold">데이터 수집</span>
           </Link>
         </div>
         <UserMenu />
