@@ -27,6 +27,31 @@ export interface Subscription {
   updated_at: string;
 }
 
+export type ExportFormat = "hwpx" | "docx" | "pdf";
+
+export interface DocumentMetadata {
+  recipient: string;
+  reference: string;
+  drafter: string;
+  reviewer: string;
+  approver: string;
+  documentNumber: string;
+  enforcementDate: string;
+  department: string;
+  contactInfo: string;
+}
+
+export interface Conversion {
+  id: string;
+  user_id: string;
+  title: string;
+  md_content: string;
+  document_metadata: DocumentMetadata;
+  export_format: ExportFormat | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -35,6 +60,13 @@ export interface Database {
         Insert: Omit<Subscription, "id" | "created_at" | "updated_at">;
         Update: Partial<
           Omit<Subscription, "id" | "user_id" | "created_at" | "updated_at">
+        >;
+      };
+      conversions: {
+        Row: Conversion;
+        Insert: Omit<Conversion, "id" | "created_at" | "updated_at">;
+        Update: Partial<
+          Omit<Conversion, "id" | "user_id" | "created_at" | "updated_at">
         >;
       };
     };
