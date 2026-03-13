@@ -1,40 +1,75 @@
 {
-  "name": "공문서 변환기 - MD to 정부 공문서",
-  "short_name": "공문서변환",
-  "description": "마크다운을 한국 정부 공문서 형식으로 변환합니다",
-  "start_url": "/converter",
+  "name": "2026 PLAN - 구독 관리 & 공문서 변환",
+  "short_name": "2026 PLAN",
+  "description": "구독 서비스를 관리하고, 마크다운을 정부 공문서 양식으로 변환하세요.",
+  "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "orientation": "portrait-primary",
   "lang": "ko",
-  "categories": ["productivity", "utilities"],
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "finance"],
+  "prefer_related_applications": false,
   "icons": [
+    {
+      "src": "/icons/icon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/icons/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
+      "purpose": "any"
     },
     {
-      "src": "/icons/screenshot-narrow.png",
-      "sizes": "720x1280",
+      "src": "/icons/maskable-192x192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "form_factor": "narrow"
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "구독 대시보드",
+      "short_name": "대시보드",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "공문서 변환기",
+      "short_name": "변환기",
+      "url": "/converter",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }
   ]
 }

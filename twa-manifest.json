@@ -1,0 +1,47 @@
+{
+  "packageId": "com.plan2026.app",
+  "host": "YOUR_DOMAIN.vercel.app",
+  "name": "2026 PLAN",
+  "launcherName": "2026 PLAN",
+  "display": "standalone",
+  "themeColor": "#4f46e5",
+  "navigationColor": "#ffffff",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#ffffff",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#ffffff",
+  "enableNotifications": false,
+  "startUrl": "/dashboard",
+  "iconUrl": "https://YOUR_DOMAIN.vercel.app/icons/icon-512x512.png",
+  "maskableIconUrl": "https://YOUR_DOMAIN.vercel.app/icons/maskable-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "android.keystore",
+    "alias": "2026plan"
+  },
+  "appVersionCode": 1,
+  "appVersionName": "1.0.0",
+  "shortcuts": [
+    {
+      "name": "구독 대시보드",
+      "shortName": "대시보드",
+      "url": "/dashboard",
+      "chosenIconUrl": "https://YOUR_DOMAIN.vercel.app/icons/icon-96x96.png"
+    },
+    {
+      "name": "공문서 변환기",
+      "shortName": "변환기",
+      "url": "/converter",
+      "chosenIconUrl": "https://YOUR_DOMAIN.vercel.app/icons/icon-96x96.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://YOUR_DOMAIN.vercel.app/manifest.json",
+  "fallbackType": "customtabs",
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://YOUR_DOMAIN.vercel.app/",
+  "minSdkVersion": 19,
+  "fingerprints": []
+}
