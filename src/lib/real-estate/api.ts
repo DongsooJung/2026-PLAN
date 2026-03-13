@@ -1,7 +1,7 @@
 import type { AptTrade, AptTradeItem, AptTradeResponse } from "./types";
 
 const API_BASE_URL =
-  "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev";
+  "https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade";
 
 function parseItem(item: AptTradeItem): AptTrade {
   const priceStr = item["거래금액"].trim().replace(/,/g, "");
