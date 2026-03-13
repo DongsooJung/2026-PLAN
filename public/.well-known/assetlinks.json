@@ -1,12 +1,12 @@
 [
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.plan2026.app",
-      "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_SHA256_FINGERPRINT"
-      ]
+    {
+          "relation": ["delegate_permission/common.handle_all_urls"],
+          "target": {
+                  "namespace": "android_app",
+                  "package_name": "com.plan2026.app",
+                  "sha256_cert_fingerprints": [
+                            "DE:DF:4B:9E:4F:07:2F:DF:41:78:9B:1E:13:16:D5:CE:67:C1:3B:21:B0:C1:F9:3E:C2:AD:62:AF:88:3B:57:9F"
+                  ]
+          }
     }
-  }
 ]
