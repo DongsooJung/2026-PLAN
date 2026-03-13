@@ -19,16 +19,27 @@ export function UserMenu() {
   const supabase = createClient();
 
   useEffect(() => {
+    if (!supabase) return;
     supabase.auth.getUser().then(({ data: { user } }) => {
       setEmail(user?.email ?? null);
     });
-  }, [supabase.auth]);
+  }, [supabase]);
 
   const handleSignOut = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     router.push("/");
     router.refresh();
   };
+
+  if (!supabase) {
+    return (
+      <Button variant="ghost" size="sm" className="gap-2" disabled>
+        <User className="h-4 w-4" />
+        <span className="hidden sm:inline text-sm text-muted-foreground">게스트</span>
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu>

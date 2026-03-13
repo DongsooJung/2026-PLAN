@@ -108,6 +108,7 @@ export function SubscriptionForm({
         });
       } else {
         const supabase = createClient();
+        if (!supabase) throw new Error("Supabase가 설정되지 않았습니다");
         const {
           data: { user },
         } = await supabase.auth.getUser();

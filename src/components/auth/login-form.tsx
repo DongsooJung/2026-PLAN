@@ -18,6 +18,12 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!supabase) {
+      router.push("/dashboard");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
