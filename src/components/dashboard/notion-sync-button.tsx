@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
 export function NotionSyncButton() {
+  const router = useRouter();
   const [syncing, setSyncing] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -18,8 +20,7 @@ export function NotionSyncButton() {
 
       if (res.ok) {
         setResult(data.message);
-        // Reload to show synced data
-        window.location.reload();
+        router.refresh();
       } else {
         setResult(data.error ?? "동기화 실패");
       }

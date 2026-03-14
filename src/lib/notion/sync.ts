@@ -59,7 +59,7 @@ function getStatus(prop: unknown): string | null {
 
 // ========== Notion → Supabase ==========
 
-interface NotionSubscription extends Partial<Subscription> {
+export interface NotionSubscription extends Partial<Subscription> {
   notion_page_id: string;
 }
 
@@ -124,14 +124,12 @@ export function subscriptionToNotionProperties(sub: Partial<Subscription>): Reco
 
 // ========== CRUD operations ==========
 
+/** Sync a single subscription to Notion (queries Notion to find existing page) */
 export async function syncToNotion(subscription: Subscription): Promise<string | null> {
-  if (!isNotionEnabled()) return null;
-
   const notion = getNotionClient();
   if (!notion) return null;
 
   try {
-    // Check if page already exists by supabase_id
     const existing = await notion.dataSources.query({
       data_source_id: getNotionDataSourceId(),
       filter: {
@@ -143,12 +141,10 @@ export async function syncToNotion(subscription: Subscription): Promise<string |
     const properties = subscriptionToNotionProperties(subscription);
 
     if (existing.results.length > 0) {
-      // Update existing page
       const pageId = existing.results[0].id;
       await notion.pages.update({ page_id: pageId, properties });
       return pageId;
     } else {
-      // Create new page under database
       const response = await notion.pages.create({
         parent: { database_id: getNotionDatabaseId() },
         properties,
@@ -161,9 +157,50 @@ export async function syncToNotion(subscription: Subscription): Promise<string |
   }
 }
 
-export async function deleteFromNotion(supabaseId: string): Promise<boolean> {
-  if (!isNotionEnabled()) return false;
+/** Batch sync using pre-fetched Notion data to avoid N+1 queries */
+export async function syncAllToNotion(
+  subscriptions: Subscription[],
+  existingNotionItems: NotionSubscription[],
+): Promise<number> {
+  const notion = getNotionClient();
+  if (!notion) return 0;
 
+  // Build supabase_id → notion_page_id lookup from pre-fetched data
+  const notionPageBySupabaseId = new Map<string, string>();
+  for (const item of existingNotionItems) {
+    if (item.id) {
+      notionPageBySupabaseId.set(item.id, item.notion_page_id);
+    }
+  }
+
+  let synced = 0;
+
+  // Process in batches of 5 for concurrency (Notion rate limit: ~3 req/s)
+  const BATCH_SIZE = 5;
+  for (let i = 0; i < subscriptions.length; i += BATCH_SIZE) {
+    const batch = subscriptions.slice(i, i + BATCH_SIZE);
+    const results = await Promise.allSettled(
+      batch.map(async (sub) => {
+        const properties = subscriptionToNotionProperties(sub);
+        const existingPageId = notionPageBySupabaseId.get(sub.id);
+
+        if (existingPageId) {
+          await notion.pages.update({ page_id: existingPageId, properties });
+        } else {
+          await notion.pages.create({
+            parent: { database_id: getNotionDatabaseId() },
+            properties,
+          });
+        }
+      })
+    );
+    synced += results.filter((r) => r.status === "fulfilled").length;
+  }
+
+  return synced;
+}
+
+export async function deleteFromNotion(supabaseId: string): Promise<boolean> {
   const notion = getNotionClient();
   if (!notion) return false;
 
@@ -191,8 +228,6 @@ export async function deleteFromNotion(supabaseId: string): Promise<boolean> {
 }
 
 export async function fetchAllFromNotion(): Promise<NotionSubscription[]> {
-  if (!isNotionEnabled()) return [];
-
   const notion = getNotionClient();
   if (!notion) return [];
 
@@ -204,6 +239,7 @@ export async function fetchAllFromNotion(): Promise<NotionSubscription[]> {
       const response = await notion.dataSources.query({
         data_source_id: getNotionDataSourceId(),
         start_cursor: cursor,
+        page_size: 100,
       });
       results.push(...(response.results.filter(r => r.object === "page") as PageObjectResponse[]));
       cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;

@@ -30,7 +30,7 @@ export async function createSubscription(
 
   // Sync to Notion (non-blocking)
   if (data) {
-    syncToNotion(data as Subscription).catch(() => {});
+    syncToNotion(data as Subscription).catch((e) => console.error("[Notion Sync]", e));
   }
 
   revalidatePath("/dashboard");
@@ -52,7 +52,7 @@ export async function updateSubscription(
 
   // Sync to Notion (non-blocking)
   if (data) {
-    syncToNotion(data as Subscription).catch(() => {});
+    syncToNotion(data as Subscription).catch((e) => console.error("[Notion Sync]", e));
   }
 
   revalidatePath("/dashboard");
@@ -68,7 +68,7 @@ export async function deleteSubscription(id: string) {
   if (error) throw error;
 
   // Delete from Notion (non-blocking)
-  deleteFromNotion(id).catch(() => {});
+  deleteFromNotion(id).catch((e) => console.error("[Notion Sync]", e));
 
   revalidatePath("/dashboard");
 }
