@@ -6,6 +6,7 @@ import { FileText, FileDown, FileImage, Loader2 } from "lucide-react";
 import type { GovDocument } from "@/lib/converter/govdoc-types";
 import type { ExportFormat } from "@/lib/types";
 import { downloadBlob } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast";
 
 interface ExportControlsProps {
   document: GovDocument | null;
@@ -15,6 +16,7 @@ interface ExportControlsProps {
 
 export function ExportControls({ document: doc, previewRef, onSaveHistory }: ExportControlsProps) {
   const [loading, setLoading] = useState<ExportFormat | null>(null);
+  const { toast } = useToast();
 
   const handleExport = useCallback(
     async (format: ExportFormat) => {
@@ -48,12 +50,12 @@ export function ExportControls({ document: doc, previewRef, onSaveHistory }: Exp
         onSaveHistory?.(format);
       } catch (err) {
         console.error(`Export failed (${format}):`, err);
-        alert(`내보내기에 실패했습니다: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+        toast(`내보내기에 실패했습니다: ${err instanceof Error ? err.message : "알 수 없는 오류"}`, "error");
       } finally {
         setLoading(null);
       }
     },
-    [doc, previewRef, onSaveHistory]
+    [doc, previewRef, onSaveHistory, toast]
   );
 
   const disabled = !doc || doc.nodes.length === 0;

@@ -30,17 +30,19 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
   const firstDayOfWeek = new Date(year, month, 1).getDay();
 
   const subscriptionsByDay = useMemo(() => {
+    const y = currentMonth.getFullYear();
+    const m = currentMonth.getMonth();
     const map: Record<number, Subscription[]> = {};
     subscriptions.forEach((sub) => {
       const date = new Date(sub.next_billing_date);
-      if (date.getFullYear() === year && date.getMonth() === month) {
+      if (date.getFullYear() === y && date.getMonth() === m) {
         const day = date.getDate();
         if (!map[day]) map[day] = [];
         map[day].push(sub);
       }
     });
     return map;
-  }, [subscriptions, year, month]);
+  }, [subscriptions, currentMonth]);
 
   const prevMonth = () => {
     setCurrentMonth(new Date(year, month - 1, 1));

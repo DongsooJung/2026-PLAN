@@ -109,7 +109,7 @@ function nodeToHwpxXml(node: GovDocNode): string {
 
 function buildSectionXml(doc: GovDocument): string {
   const meta = doc.metadata;
-  const { body: bodyFont, heading: headingFont } = GOVDOC_STYLES.fonts;
+  const { body: bodyFont } = GOVDOC_STYLES.fonts;
   const sizes = GOVDOC_STYLES.sizes;
   const margins = GOVDOC_STYLES.margins;
 

@@ -1,5 +1,3 @@
-import type { GovDocument } from "./govdoc-types";
-
 export async function exportToPdf(previewElement: HTMLElement): Promise<Blob> {
   const html2canvas = (await import("html2canvas")).default;
   const { jsPDF } = await import("jspdf");
