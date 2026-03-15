@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, History } from "lucide-react";
+import { FileText, History, Send } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +40,18 @@ export function Header() {
             >
               <History className="h-3.5 w-3.5" />
               이력
+            </Link>
+            <Link
+              href="/postman"
+              className={cn(
+                "px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1",
+                pathname?.startsWith("/postman")
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Send className="h-3.5 w-3.5" />
+              Postman
             </Link>
           </nav>
         </div>

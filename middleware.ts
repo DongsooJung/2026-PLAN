@@ -31,7 +31,8 @@ export async function middleware(request: NextRequest) {
 
   const isProtected =
     request.nextUrl.pathname.startsWith("/dashboard") ||
-    request.nextUrl.pathname.startsWith("/converter");
+    request.nextUrl.pathname.startsWith("/converter") ||
+    request.nextUrl.pathname.startsWith("/postman");
 
   if (!user && isProtected) {
     return NextResponse.redirect(new URL("/", request.url));
@@ -45,5 +46,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/converter/:path*"],
+  matcher: ["/", "/dashboard/:path*", "/converter/:path*", "/postman/:path*"],
 };
