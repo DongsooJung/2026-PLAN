@@ -1,5 +1,6 @@
 {
-  "name": "korean-doc-formatter",
+  "name": "2026-plan",
+  "description": "구독 관리 대시보드 & 공문서 변환기 - 2026년 생산성 도구 모음",
   "version": "1.0.0",
   "private": true,
   "scripts": {
