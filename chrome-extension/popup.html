@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 PLAN</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 360px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    .header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .header p {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    .menu {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .menu-item:hover {
+      border-color: #4f46e5;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
+      transform: translateY(-1px);
+    }
+    .menu-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .icon-dashboard { background: #ede9fe; }
+    .icon-converter { background: #dbeafe; }
+    .icon-sidepanel { background: #ecfdf5; }
+    .icon-newtab { background: #fef3c7; }
+    .menu-text h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .menu-text p {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .footer {
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>2026 PLAN</h1>
+    <p>구독 관리 & 공문서 변환기</p>
+  </div>
+  <div class="menu">
+    <a class="menu-item" id="btn-dashboard">
+      <div class="menu-icon icon-dashboard">📊</div>
+      <div class="menu-text">
+        <h3>구독 대시보드</h3>
+        <p>내 구독 서비스를 한눈에 확인</p>
+      </div>
+    </a>
+    <a class="menu-item" id="btn-converter">
+      <div class="menu-icon icon-converter">📝</div>
+      <div class="menu-text">
+        <h3>공문서 변환기</h3>
+        <p>마크다운을 공문서 양식으로 변환</p>
+      </div>
+    </a>
+    <a class="menu-item" id="btn-sidepanel">
+      <div class="menu-icon icon-sidepanel">📌</div>
+      <div class="menu-text">
+        <h3>사이드 패널로 열기</h3>
+        <p>브라우저 옆에서 바로 사용</p>
+      </div>
+    </a>
+    <a class="menu-item" id="btn-newtab">
+      <div class="menu-icon icon-newtab">🌐</div>
+      <div class="menu-text">
+        <h3>새 탭에서 열기</h3>
+        <p>전체 화면으로 사용</p>
+      </div>
+    </a>
+  </div>
+  <div class="footer">v1.0.0 · 2026 PLAN</div>
+  <script src="popup.js"></script>
+</body>
+</html>
