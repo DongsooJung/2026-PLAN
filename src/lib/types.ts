@@ -52,6 +52,23 @@ export interface Conversion {
   updated_at: string;
 }
 
+export interface CcUsage {
+  id: string;
+  user_id: string;
+  session_id: string | null;
+  model: string;
+  input_tokens: number;
+  output_tokens: number;
+  cache_read_tokens: number;
+  cache_write_tokens: number;
+  cost_usd: number;
+  duration_ms: number;
+  tool_uses: number;
+  task_description: string | null;
+  used_at: string;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -68,6 +85,11 @@ export interface Database {
         Update: Partial<
           Omit<Conversion, "id" | "user_id" | "created_at" | "updated_at">
         >;
+      };
+      cc_usage: {
+        Row: CcUsage;
+        Insert: Omit<CcUsage, "id" | "created_at">;
+        Update: Partial<Omit<CcUsage, "id" | "user_id" | "created_at">>;
       };
     };
   };

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, History } from "lucide-react";
+import { FileText, History, BarChart3 } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +40,18 @@ export function Header() {
             >
               <History className="h-3.5 w-3.5" />
               이력
+            </Link>
+            <Link
+              href="/dashboard/ccusage"
+              className={cn(
+                "px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1",
+                pathname === "/dashboard/ccusage"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <BarChart3 className="h-3.5 w-3.5" />
+              CC Usage
             </Link>
           </nav>
         </div>
