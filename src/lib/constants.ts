@@ -33,3 +33,13 @@ export const POPULAR_SERVICES = [
   { name: "Google One", category: "클라우드" },
   { name: "Microsoft 365", category: "생산성" },
 ] as const;
+
+// 결제일 알림: 선택 가능한 "N일 전" 옵션
+export const REMINDER_DAY_OPTIONS = [
+  { value: 1, label: "1일 전" },
+  { value: 3, label: "3일 전" },
+  { value: 7, label: "7일 전" },
+  { value: 14, label: "14일 전" },
+] as const;
+
+export const DEFAULT_REMINDER_DAYS = [7, 3, 1];
