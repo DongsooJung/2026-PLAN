@@ -52,6 +52,33 @@ export interface Conversion {
   updated_at: string;
 }
 
+export interface NotificationSettings {
+  user_id: string;
+  enabled: boolean;
+  reminder_days: number[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PushSubscriptionRecord {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  user_agent: string | null;
+  created_at: string;
+}
+
+export interface NotificationLog {
+  id: string;
+  user_id: string;
+  subscription_id: string;
+  billing_date: string;
+  reminder_day: number;
+  sent_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -68,6 +95,25 @@ export interface Database {
         Update: Partial<
           Omit<Conversion, "id" | "user_id" | "created_at" | "updated_at">
         >;
+      };
+      notification_settings: {
+        Row: NotificationSettings;
+        Insert: Omit<NotificationSettings, "created_at" | "updated_at">;
+        Update: Partial<
+          Omit<NotificationSettings, "user_id" | "created_at" | "updated_at">
+        >;
+      };
+      push_subscriptions: {
+        Row: PushSubscriptionRecord;
+        Insert: Omit<PushSubscriptionRecord, "id" | "created_at">;
+        Update: Partial<
+          Omit<PushSubscriptionRecord, "id" | "user_id" | "created_at">
+        >;
+      };
+      notification_logs: {
+        Row: NotificationLog;
+        Insert: Omit<NotificationLog, "id" | "sent_at">;
+        Update: Partial<Omit<NotificationLog, "id">>;
       };
     };
   };
