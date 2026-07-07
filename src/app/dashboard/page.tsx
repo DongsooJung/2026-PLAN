@@ -1,6 +1,7 @@
 import { getSubscriptions } from "@/actions/subscriptions";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { SubscriptionList } from "@/components/dashboard/subscription-list";
+import { SpendingCharts } from "@/components/dashboard/spending-charts";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 import type { Subscription } from "@/lib/types";
 
@@ -25,6 +26,7 @@ export default async function DashboardPage() {
         <NotificationBell subscriptions={subscriptions} />
       </div>
       <SummaryCards subscriptions={subscriptions} />
+      <SpendingCharts subscriptions={subscriptions} />
       <SubscriptionList subscriptions={subscriptions} />
     </div>
   );

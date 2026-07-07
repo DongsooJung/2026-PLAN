@@ -31,12 +31,14 @@ src/
     calendar-view.tsx           # 캘린더 뷰
     category-filter.tsx         # 카테고리 필터
     delete-dialog.tsx           # 삭제 확인
-    notification-bell.tsx       # 결제일 알림 벨 (신규)
+    notification-bell.tsx       # 결제일 알림 벨
+    spending-charts.tsx         # 비용 차트 (월별 지출 전망, 카테고리별 비율)
   components/layout/header.tsx  # 헤더 (공문서 변환기 네비게이션)
   components/pwa/               # PWA 서비스워커 등록
   lib/types.ts                  # Subscription, Conversion 타입
   lib/constants.ts              # 카테고리, 결제주기, 상태, 인기서비스
   lib/utils.ts                  # 유틸 (toMonthlyCost, formatCurrency, daysUntil 등)
+  lib/export-csv.ts             # 구독 목록 CSV 내보내기 (BOM 포함, Excel 한글 호환)
   lib/supabase/                 # Supabase 클라이언트 (client.ts, server.ts)
 supabase/migrations/            # DB 마이그레이션
 middleware.ts                   # 인증 미들웨어 (경로 보호)
@@ -49,6 +51,7 @@ middleware.ts                   # 인증 미들웨어 (경로 보호)
 ## 현재 브랜치
 - `main` - 프로덕션
 - `claude/list-dashboard-requirements-RFPJQ` - 대시보드 요구사항 리스트 + 결제일 알림 기능 (PR #5)
+- `claude/subscription-dashboard-opus-0dc4m0` - PR #5 작업 승계 + 차트/검색/정렬/CSV
 
 ## 완료된 작업
 1. 구독 관리 대시보드 전체 구현 (77개 요구사항, DASHBOARD_REQUIREMENTS.md 참조)
@@ -59,11 +62,16 @@ middleware.ts                   # 인증 미들웨어 (경로 보호)
    - 브라우저 Notification API
    - 알림 설정 (N일 전, 활성화/비활성화)
    - localStorage로 설정 유지
+5. 구독 비용 차트 (spending-charts.tsx)
+   - 월별 지출 전망 (향후 6개월, 결제 주기 반영 컬럼 차트)
+   - 카테고리별 월 지출 비율 (가로 막대, 호버 툴팁)
+6. 검색 + 정렬 (subscription-list.tsx)
+   - 서비스명/플랜/메모 검색
+   - 결제일 임박순 / 금액(월 환산) 높은·낮은순 / 이름순 / 최근 등록순
+7. CSV 내보내기 (lib/export-csv.ts)
+   - 현재 필터/정렬된 목록 그대로 내보내기, BOM 포함 (Excel 한글 호환)
 
 ## 다음 작업 후보
-- [ ] 구독 비용 차트/그래프 (월별 지출 추이, 카테고리별 비율)
-- [ ] 구독 내보내기 (CSV/Excel)
-- [ ] 검색 + 정렬 기능 (금액순, 결제일순, 이름순)
 - [ ] 온보딩 플로우
 - [ ] 테스트 코드 (unit/e2e)
 - [ ] CI/CD 파이프라인 (GitHub Actions)
