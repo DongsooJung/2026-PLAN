@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import type { Subscription } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/constants";
@@ -29,18 +28,15 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
 
-  const subscriptionsByDay = useMemo(() => {
-    const map: Record<number, Subscription[]> = {};
-    subscriptions.forEach((sub) => {
-      const date = new Date(sub.next_billing_date);
-      if (date.getFullYear() === year && date.getMonth() === month) {
-        const day = date.getDate();
-        if (!map[day]) map[day] = [];
-        map[day].push(sub);
-      }
-    });
-    return map;
-  }, [subscriptions, year, month]);
+  const subscriptionsByDay: Record<number, Subscription[]> = {};
+  subscriptions.forEach((sub) => {
+    const date = new Date(sub.next_billing_date);
+    if (date.getFullYear() === year && date.getMonth() === month) {
+      const day = date.getDate();
+      if (!subscriptionsByDay[day]) subscriptionsByDay[day] = [];
+      subscriptionsByDay[day].push(sub);
+    }
+  });
 
   const prevMonth = () => {
     setCurrentMonth(new Date(year, month - 1, 1));
