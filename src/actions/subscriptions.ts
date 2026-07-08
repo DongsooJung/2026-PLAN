@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { syncToNotion, deleteFromNotion } from "@/lib/notion/sync";
 import type { Subscription } from "@/lib/types";
 
 export async function getSubscriptions(): Promise<Subscription[]> {
@@ -19,25 +20,41 @@ export async function createSubscription(
   formData: Omit<Subscription, "id" | "created_at" | "updated_at">
 ) {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("subscriptions")
-    .insert(formData as Record<string, unknown>);
+    .insert(formData as Record<string, unknown>)
+    .select()
+    .single();
 
   if (error) throw error;
+
+  // Sync to Notion (non-blocking)
+  if (data) {
+    syncToNotion(data as Subscription).catch((e) => console.error("[Notion Sync]", e));
+  }
+
   revalidatePath("/dashboard");
 }
 
 export async function updateSubscription(
   id: string,
-  data: Partial<Omit<Subscription, "id" | "user_id" | "created_at" | "updated_at">>
+  updateData: Partial<Omit<Subscription, "id" | "user_id" | "created_at" | "updated_at">>
 ) {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("subscriptions")
-    .update(data as Record<string, unknown>)
-    .eq("id", id);
+    .update(updateData as Record<string, unknown>)
+    .eq("id", id)
+    .select()
+    .single();
 
   if (error) throw error;
+
+  // Sync to Notion (non-blocking)
+  if (data) {
+    syncToNotion(data as Subscription).catch((e) => console.error("[Notion Sync]", e));
+  }
+
   revalidatePath("/dashboard");
 }
 
@@ -49,5 +66,9 @@ export async function deleteSubscription(id: string) {
     .eq("id", id);
 
   if (error) throw error;
+
+  // Delete from Notion (non-blocking)
+  deleteFromNotion(id).catch((e) => console.error("[Notion Sync]", e));
+
   revalidatePath("/dashboard");
 }
