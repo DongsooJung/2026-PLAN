@@ -64,6 +64,20 @@ npm run dev
 | `npm run build` | 프로덕션 빌드 |
 | `npm run start` | 프로덕션 서버 실행 |
 | `npm run lint` | ESLint 검사 |
+| `npm test` | Vitest 유닛 테스트 실행 |
+| `npm run test:watch` | 테스트 watch 모드 |
+
+## 🧪 테스트
+
+Vitest 기반 유닛 테스트로 핵심 순수 로직을 검증합니다.
+
+- `src/lib/utils.test.ts` — 요금 환산·통화 포맷·날짜 계산
+- `src/lib/converter/numbering.test.ts` — 공문서 번호 체계(1./가./1)…)
+- `src/lib/converter/md-parser.test.ts` — 마크다운 → 공문서 노드 변환
+
+```bash
+npm test
+```
 
 ## 🔒 보안
 
