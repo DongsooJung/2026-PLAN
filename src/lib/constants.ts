@@ -1,13 +1,19 @@
+// Categorical chart colors are assigned in this FIXED order (never cycled).
+// Palette validated for both light/dark surfaces — see globals.css --chart-1..8.
 export const CATEGORIES = [
-  { value: "엔터테인먼트", label: "엔터테인먼트", emoji: "🎬" },
-  { value: "생산성", label: "생산성", emoji: "⚡" },
-  { value: "음악", label: "음악", emoji: "🎵" },
-  { value: "클라우드", label: "클라우드", emoji: "☁️" },
-  { value: "교육", label: "교육", emoji: "📚" },
-  { value: "건강", label: "건강", emoji: "💪" },
-  { value: "뉴스", label: "뉴스", emoji: "📰" },
-  { value: "기타", label: "기타", emoji: "📦" },
+  { value: "엔터테인먼트", label: "엔터테인먼트", emoji: "🎬", color: "var(--chart-1)" },
+  { value: "생산성", label: "생산성", emoji: "⚡", color: "var(--chart-2)" },
+  { value: "음악", label: "음악", emoji: "🎵", color: "var(--chart-3)" },
+  { value: "클라우드", label: "클라우드", emoji: "☁️", color: "var(--chart-4)" },
+  { value: "교육", label: "교육", emoji: "📚", color: "var(--chart-5)" },
+  { value: "건강", label: "건강", emoji: "💪", color: "var(--chart-6)" },
+  { value: "뉴스", label: "뉴스", emoji: "📰", color: "var(--chart-7)" },
+  { value: "기타", label: "기타", emoji: "📦", color: "var(--chart-8)" },
 ] as const;
+
+export const CATEGORY_COLOR: Record<string, string> = Object.fromEntries(
+  CATEGORIES.map((c) => [c.value, c.color])
+);
 
 export const BILLING_CYCLES = [
   { value: "monthly", label: "월간" },
