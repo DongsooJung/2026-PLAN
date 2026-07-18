@@ -2,7 +2,7 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import type { Root, Content, List, ListItem, Table, TableRow, TableCell } from "mdast";
-import type { GovDocNode, GovDocument, DocumentMetadata, NumberingLevel } from "./govdoc-types";
+import type { GovDocNode, GovDocument, DocumentMetadata } from "./govdoc-types";
 import { DEFAULT_METADATA } from "./govdoc-types";
 import { detectNumberingLevel } from "./numbering";
 

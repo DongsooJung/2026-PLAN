@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 2026 PLAN — 구독 관리 & 공문서 변환
 
-## Getting Started
+구독 서비스를 한눈에 관리하고, 마크다운을 대한민국 정부 공문서 양식으로 변환하는 Next.js 웹앱입니다. PWA/TWA로 패키징되어 Google Play 배포까지 지원합니다.
 
-First, run the development server:
+## ✨ 주요 기능
+
+### 📊 구독 관리 대시보드 (`/dashboard`)
+- 구독 서비스 등록·수정·삭제 (서비스명, 요금제, 비용, 결제주기, 카테고리, 다음 결제일)
+- 월간 지출 요약 카드 및 카테고리별 필터링
+- 결제 예정일을 보여주는 캘린더 뷰
+- 통화(KRW 등)·결제주기(월/년/주)별 관리
+
+### 🖥️ 순환 대시보드 / 키오스크 모드 (`/dashboard/kiosk`)
+- **15초마다 자동 전환**되는 프레젠테이션형 시각화 (진행바 표시)
+- 4개 지표 슬라이드: 전체 요약 · 카테고리별 지출(도넛) · 지출 상위 구독(막대) · 결제 예정 추이(월별 막대)
+- 재생/일시정지, 이전/다음, 점 인디케이터, 전체화면 지원
+- 키보드 조작(← → 이동, Space 정지) · 탭이 백그라운드면 자동 정지
+- 외부 차트 라이브러리 없이 경량 SVG로 구현 (CVD 검증 완료 팔레트, 라이트/다크 대응)
+
+### 📄 공문서 변환기 (`/converter`)
+- 마크다운을 한국 정부 공문서 서식으로 변환
+- 공문서 번호 체계(1. → 가. → 1) → 가) …) 자동 적용
+- **DOCX · HWPX · PDF** 형식으로 내보내기
+- 변환 이력 저장 및 조회 (`/converter/history`)
+
+## 🛠 기술 스택
+
+| 영역 | 사용 기술 |
+|------|-----------|
+| 프레임워크 | Next.js 16 (App Router), React 19 |
+| 언어 | TypeScript |
+| 스타일 | Tailwind CSS v4, shadcn/ui (Radix UI) |
+| 인증·DB | Supabase (Auth + Postgres, RLS) |
+| 폼·검증 | react-hook-form, zod |
+| 문서 생성 | docx, jspdf, html2canvas, jszip |
+| PWA/TWA | Service Worker, Web App Manifest, Bubblewrap |
+
+## 🚀 시작하기
+
+### 1. 환경 변수 설정
+`.env.example`을 복사해 `.env.local`을 만들고 Supabase 값을 채웁니다.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. 데이터베이스 마이그레이션
+`supabase/migrations/`의 SQL을 Supabase 프로젝트에 적용합니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `001_create_subscriptions.sql` — 구독 테이블 + RLS 정책
+- `002_create_conversions.sql` — 변환 이력 테이블 + RLS 정책
 
-## Learn More
+### 3. 개발 서버 실행
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+[http://localhost:3000](http://localhost:3000)에서 확인합니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📜 스크립트
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| 명령 | 설명 |
+|------|------|
+| `npm run dev` | 개발 서버 실행 |
+| `npm run build` | 프로덕션 빌드 |
+| `npm run start` | 프로덕션 서버 실행 |
+| `npm run lint` | ESLint 검사 |
+| `npm test` | Vitest 유닛 테스트 실행 |
+| `npm run test:watch` | 테스트 watch 모드 |
 
-## Deploy on Vercel
+## 🧪 테스트
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Vitest 기반 유닛 테스트로 핵심 순수 로직을 검증합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/lib/utils.test.ts` — 요금 환산·통화 포맷·날짜 계산
+- `src/lib/converter/numbering.test.ts` — 공문서 번호 체계(1./가./1)…)
+- `src/lib/converter/md-parser.test.ts` — 마크다운 → 공문서 노드 변환
+
+```bash
+npm test
+```
+
+## 🔒 보안
+
+- 모든 테이블에 **Row Level Security(RLS)** 적용 — 사용자는 본인 데이터만 접근 가능
+- 서버 액션에서 `user_id`를 세션(`auth.getUser()`)으로부터 결정 (클라이언트 입력 신뢰 안 함)
+- 보호 경로(`/dashboard`, `/converter`)는 `middleware.ts`에서 인증 검사
+
+## 📱 배포
+
+- **웹**: Vercel (`2026-plan-8zwh.vercel.app`)
+- **Android**: TWA로 Google Play 배포 — [`GOOGLE_PLAY_DEPLOY.md`](./GOOGLE_PLAY_DEPLOY.md) 참고
+
+## 📂 프로젝트 구조
+
+```
+src/
+├── actions/        # 서버 액션 (subscriptions, conversions)
+├── app/            # App Router 페이지 (dashboard, converter, auth)
+├── components/     # UI·기능 컴포넌트 (dashboard, converter, ui)
+└── lib/            # 유틸·타입·Supabase 클라이언트·변환 로직
+    └── converter/  # 마크다운 파싱 및 DOCX/HWPX/PDF 내보내기
+```

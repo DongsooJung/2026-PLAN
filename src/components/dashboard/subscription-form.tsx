@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/client";
 import {
   createSubscription,
   updateSubscription,
@@ -107,14 +106,7 @@ export function SubscriptionForm({
           memo: data.memo || null,
         });
       } else {
-        const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) throw new Error("로그인이 필요합니다");
-
         await createSubscription({
-          user_id: user.id,
           service_name: data.service_name,
           plan_name: data.plan_name || null,
           cost: data.cost,

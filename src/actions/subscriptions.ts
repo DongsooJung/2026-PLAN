@@ -16,12 +16,17 @@ export async function getSubscriptions(): Promise<Subscription[]> {
 }
 
 export async function createSubscription(
-  formData: Omit<Subscription, "id" | "created_at" | "updated_at">
+  formData: Omit<Subscription, "id" | "user_id" | "created_at" | "updated_at">
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("인증이 필요합니다");
+
   const { error } = await supabase
     .from("subscriptions")
-    .insert(formData as Record<string, unknown>);
+    .insert({ ...formData, user_id: user.id } as Record<string, unknown>);
 
   if (error) throw error;
   revalidatePath("/dashboard");

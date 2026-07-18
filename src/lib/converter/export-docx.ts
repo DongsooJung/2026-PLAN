@@ -7,15 +7,12 @@ import {
   TableCell as DocxTableCell,
   WidthType,
   AlignmentType,
-  HeadingLevel,
   Header,
   Footer,
   PageNumber,
-  NumberFormat,
   Packer,
   BorderStyle,
   convertMillimetersToTwip,
-  LevelFormat,
 } from "docx";
 import type { GovDocument, GovDocNode } from "./govdoc-types";
 import { GOVDOC_STYLES, METADATA_LABELS } from "./govdoc-constants";
