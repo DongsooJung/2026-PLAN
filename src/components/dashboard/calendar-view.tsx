@@ -1,7 +1,7 @@
 "use client";
 
 import type { Subscription } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, parseDateOnly } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
 
   const subscriptionsByDay: Record<number, Subscription[]> = {};
   subscriptions.forEach((sub) => {
-    const date = new Date(sub.next_billing_date);
+    const date = parseDateOnly(sub.next_billing_date);
     if (date.getFullYear() === year && date.getMonth() === month) {
       const day = date.getDate();
       if (!subscriptionsByDay[day]) subscriptionsByDay[day] = [];

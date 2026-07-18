@@ -27,12 +27,14 @@ export function RotatingDashboard({
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [visible, setVisible] = useState(true);
+  const [hold, setHold] = useState(false); // 호버/포커스 중 일시정지
   const [progress, setProgress] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const count = PANELS.length;
-  const active = playing && visible;
+  // 탭이 보이고, 재생 중이며, 사용자가 조작(호버/포커스)하지 않을 때만 순환
+  const active = playing && visible && !hold;
 
   const goTo = useCallback(
     (target: number) => {
@@ -102,10 +104,26 @@ export function RotatingDashboard({
   return (
     <div
       ref={rootRef}
+      role="region"
+      aria-roledescription="회전식 대시보드"
+      aria-label={`${panel.title} (${index + 1}/${count})`}
+      onMouseEnter={() => setHold(true)}
+      onMouseLeave={() => setHold(false)}
+      onFocusCapture={() => setHold(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setHold(false);
+      }}
       className="flex flex-col gap-4 rounded-2xl border bg-[var(--background)] p-4 sm:p-6"
     >
       {/* 진행바 */}
-      <div className="h-1 w-full overflow-hidden rounded-full bg-[var(--muted)]">
+      <div
+        className="h-1 w-full overflow-hidden rounded-full bg-[var(--muted)]"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(progress * 100)}
+        aria-label="다음 슬라이드까지 남은 시간"
+      >
         <div
           className="h-full rounded-full bg-primary"
           style={{
@@ -167,6 +185,10 @@ export function RotatingDashboard({
       {/* 패널 본문 */}
       <div
         key={panel.id}
+        role="group"
+        aria-roledescription="슬라이드"
+        aria-label={panel.title}
+        aria-live={active ? "off" : "polite"}
         className="kiosk-fade min-h-[300px] flex-1 sm:min-h-[360px]"
       >
         {panel.render(subscriptions)}

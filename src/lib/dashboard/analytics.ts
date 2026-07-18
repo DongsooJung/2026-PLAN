@@ -1,5 +1,5 @@
 import type { Subscription, Category } from "@/lib/types";
-import { toMonthlyCost } from "@/lib/utils";
+import { toMonthlyCost, parseDateOnly } from "@/lib/utils";
 import { CATEGORY_COLOR } from "@/lib/constants";
 
 /**
@@ -146,7 +146,7 @@ export function upcomingBillings(
   }
 
   for (const s of activeSubs(subs)) {
-    const date = new Date(s.next_billing_date);
+    const date = parseDateOnly(s.next_billing_date);
     const bucket = index.get(ymKey(date));
     if (bucket) {
       bucket.total += Number(s.cost);

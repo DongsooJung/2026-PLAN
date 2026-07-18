@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { toMonthlyCost, formatCurrency, daysUntil, formatDate } from "./utils";
+import {
+  toMonthlyCost,
+  formatCurrency,
+  daysUntil,
+  formatDate,
+  parseDateOnly,
+} from "./utils";
 
 describe("toMonthlyCost", () => {
   it("월간 요금은 그대로 반환한다", () => {
@@ -28,6 +34,24 @@ describe("formatCurrency", () => {
 
   it("USD는 소수점 둘째 자리까지 표시한다", () => {
     expect(formatCurrency(9.9, "USD")).toContain("9.90");
+  });
+});
+
+describe("parseDateOnly", () => {
+  it("YYYY-MM-DD를 로컬 자정 기준의 날짜 부분으로 해석한다", () => {
+    const d = parseDateOnly("2026-03-01");
+    // 시간대와 무관하게 로컬 3월 1일이어야 한다 (UTC 파싱이면 음수 오프셋에서 2월로 밀림)
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(2); // 0-indexed = 3월
+    expect(d.getDate()).toBe(1);
+    expect(d.getHours()).toBe(0);
+  });
+
+  it("시간이 포함된 문자열도 날짜 부분만 사용한다", () => {
+    const d = parseDateOnly("2026-12-25T09:30:00Z");
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(11);
+    expect(d.getDate()).toBe(25);
   });
 });
 

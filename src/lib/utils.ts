@@ -28,8 +28,22 @@ export function formatCurrency(
   }).format(amount);
 }
 
+/**
+ * "YYYY-MM-DD" 날짜 문자열을 로컬 자정 Date로 파싱한다.
+ * new Date("YYYY-MM-DD")는 UTC 자정으로 해석되어 UTC보다 뒤진 시간대에서는
+ * 하루 밀릴 수 있으므로, 날짜 부분을 직접 로컬 기준으로 구성한다.
+ */
+export function parseDateOnly(dateStr: string): Date {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateStr);
+  if (match) {
+    const [, y, m, d] = match;
+    return new Date(Number(y), Number(m) - 1, Number(d));
+  }
+  return new Date(dateStr);
+}
+
 export function daysUntil(dateStr: string): number {
-  const target = new Date(dateStr);
+  const target = parseDateOnly(dateStr);
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   target.setHours(0, 0, 0, 0);
@@ -43,7 +57,7 @@ export function formatDate(dateStr: string): string {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(new Date(dateStr));
+  }).format(parseDateOnly(dateStr));
 }
 
 export function downloadBlob(blob: Blob, filename: string) {
