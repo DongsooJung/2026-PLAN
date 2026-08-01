@@ -22,11 +22,15 @@ import { Plus, LayoutGrid, Calendar, Download, Search } from "lucide-react";
 
 interface SubscriptionListProps {
   subscriptions: Subscription[];
+  readOnly?: boolean;
 }
 
 type SortOption = "billing-date" | "cost-high" | "cost-low" | "name";
 
-export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
+export function SubscriptionList({
+  subscriptions,
+  readOnly = false,
+}: SubscriptionListProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSubscription, setEditingSubscription] =
@@ -42,13 +46,13 @@ export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
       .filter(
         (subscription) =>
           selectedCategory === "all" ||
-          subscription.category === selectedCategory
+          subscription.category === selectedCategory,
       )
       .filter((subscription) => {
         if (!normalizedQuery) return true;
 
         return [subscription.service_name, subscription.plan_name ?? ""].some(
-          (value) => value.toLocaleLowerCase("ko-KR").includes(normalizedQuery)
+          (value) => value.toLocaleLowerCase("ko-KR").includes(normalizedQuery),
         );
       })
       .toSorted((a, b) => {
@@ -85,7 +89,7 @@ export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
     const date = new Intl.DateTimeFormat("en-CA").format(new Date());
     downloadBlob(
       new Blob([csv], { type: "text/csv;charset=utf-8" }),
-      `subscriptions-${date}.csv`
+      `subscriptions-${date}.csv`,
     );
   };
 
@@ -127,10 +131,12 @@ export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
             <Download className="mr-1 h-4 w-4" />
             CSV 내보내기
           </Button>
-          <Button onClick={handleAdd} size="sm">
-            <Plus className="mr-1 h-4 w-4" />
-            구독 추가
-          </Button>
+          {!readOnly && (
+            <Button onClick={handleAdd} size="sm">
+              <Plus className="mr-1 h-4 w-4" />
+              구독 추가
+            </Button>
+          )}
         </div>
       </div>
 
@@ -176,6 +182,7 @@ export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
                 key={subscription.id}
                 subscription={subscription}
                 onEdit={handleEdit}
+                readOnly={readOnly}
               />
             ))}
           </div>
@@ -190,8 +197,7 @@ export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
                   &quot;구독 추가&quot; 버튼을 눌러 구독 서비스를 등록하세요
                 </p>
                 <Button onClick={handleAdd} className="mt-4" size="sm">
-                  <Plus className="mr-1 h-4 w-4" />
-                  첫 구독 추가하기
+                  <Plus className="mr-1 h-4 w-4" />첫 구독 추가하기
                 </Button>
               </>
             ) : (
@@ -221,11 +227,13 @@ export function SubscriptionList({ subscriptions }: SubscriptionListProps) {
         <CalendarView subscriptions={filtered} />
       )}
 
-      <SubscriptionDialog
-        open={dialogOpen}
-        onClose={handleClose}
-        subscription={editingSubscription}
-      />
+      {!readOnly && (
+        <SubscriptionDialog
+          open={dialogOpen}
+          onClose={handleClose}
+          subscription={editingSubscription}
+        />
+      )}
     </div>
   );
 }

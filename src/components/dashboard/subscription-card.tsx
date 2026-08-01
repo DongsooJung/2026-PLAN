@@ -4,12 +4,7 @@ import { useState } from "react";
 import type { Subscription } from "@/lib/types";
 import { CATEGORIES, STATUS_OPTIONS, BILLING_CYCLES } from "@/lib/constants";
 import { formatCurrency, daysUntil, formatDate } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
@@ -18,18 +13,20 @@ import { DeleteDialog } from "./delete-dialog";
 interface SubscriptionCardProps {
   subscription: Subscription;
   onEdit: (subscription: Subscription) => void;
+  readOnly?: boolean;
 }
 
 export function SubscriptionCard({
   subscription,
   onEdit,
+  readOnly = false,
 }: SubscriptionCardProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const category = CATEGORIES.find((c) => c.value === subscription.category);
   const status = STATUS_OPTIONS.find((s) => s.value === subscription.status);
   const cycle = BILLING_CYCLES.find(
-    (c) => c.value === subscription.billing_cycle
+    (c) => c.value === subscription.billing_cycle,
   );
   const days = daysUntil(subscription.next_billing_date);
 
@@ -48,24 +45,26 @@ export function SubscriptionCard({
               </p>
             )}
           </div>
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => onEdit(subscription)}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-destructive"
-              onClick={() => setDeleteOpen(true)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+          {!readOnly && (
+            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onEdit(subscription)}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-destructive"
+                onClick={() => setDeleteOpen(true)}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          )}
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-baseline justify-between">
@@ -96,8 +95,8 @@ export function SubscriptionCard({
                 subscription.status === "active"
                   ? "default"
                   : subscription.status === "paused"
-                  ? "secondary"
-                  : "destructive"
+                    ? "secondary"
+                    : "destructive"
               }
               className="text-xs"
             >
@@ -107,12 +106,14 @@ export function SubscriptionCard({
         </CardContent>
       </Card>
 
-      <DeleteDialog
-        open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        subscriptionId={subscription.id}
-        serviceName={subscription.service_name}
-      />
+      {!readOnly && (
+        <DeleteDialog
+          open={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          subscriptionId={subscription.id}
+          serviceName={subscription.service_name}
+        />
+      )}
     </>
   );
 }
