@@ -4,6 +4,8 @@ import { SubscriptionList } from "@/components/dashboard/subscription-list";
 import { NotionSyncButton } from "@/components/dashboard/notion-sync-button";
 import type { Subscription } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   let subscriptions: Subscription[] = [];
 

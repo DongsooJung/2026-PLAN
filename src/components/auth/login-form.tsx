@@ -12,6 +12,7 @@ export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
@@ -19,6 +20,7 @@ export function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
@@ -28,19 +30,32 @@ export function LoginForm() {
           password,
         });
         if (error) throw error;
+        router.push("/dashboard");
+        router.refresh();
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
         });
         if (error) throw error;
+        if (data.user && !data.session) {
+          setSuccess("인증 이메일을 발송했습니다. 이메일을 확인해주세요.");
+          return;
+        }
+        router.push("/dashboard");
+        router.refresh();
       }
-      router.push("/dashboard");
-      router.refresh();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "오류가 발생했습니다"
-      );
+      const message = err instanceof Error ? err.message : "오류가 발생했습니다";
+      if (message.includes("Invalid login credentials")) {
+        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      } else if (message.includes("Email not confirmed")) {
+        setError("이메일 인증이 완료되지 않았습니다. 이메일을 확인해주세요.");
+      } else if (message.includes("User already registered")) {
+        setError("이미 가입된 이메일입니다. 로그인해주세요.");
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
@@ -73,6 +88,9 @@ export function LoginForm() {
       </div>
       {error && (
         <p className="text-sm text-destructive">{error}</p>
+      )}
+      {success && (
+        <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
       )}
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "처리 중..." : isLogin ? "로그인" : "회원가입"}
