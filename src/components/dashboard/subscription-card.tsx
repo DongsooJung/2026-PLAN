@@ -79,7 +79,7 @@ export function SubscriptionCard({
             <span className="text-muted-foreground">다음 결제</span>
             <span className="font-medium">
               {formatDate(subscription.next_billing_date)}
-              {days >= 0 && (
+              {days !== null && days >= 0 && (
                 <span className="ml-1 text-xs text-muted-foreground">
                   (D-{days})
                 </span>

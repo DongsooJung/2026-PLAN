@@ -6,22 +6,25 @@ import { FileText, History } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { cn } from "@/lib/utils";
 
-export function Header() {
+export function Header({ privateDataMode = false }: { privateDataMode?: boolean }) {
   const pathname = usePathname();
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  const isReadOnly = isDemoMode || privateDataMode;
 
   return (
     <header className="border-b bg-card">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-6">
           <Link
-            href={isDemoMode ? "/dashboard" : "/converter"}
+            href={isReadOnly ? "/dashboard" : "/converter"}
             className="flex items-center gap-2"
           >
             <FileText className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold">공문서 변환기</h1>
+            <h1 className="text-xl font-bold">
+              {privateDataMode ? "2026 구독 관리" : "공문서 변환기"}
+            </h1>
           </Link>
-          {!isDemoMode && (
+          {!isReadOnly && (
             <nav className="flex items-center gap-1">
               <Link
                 href="/converter"
@@ -49,9 +52,9 @@ export function Header() {
             </nav>
           )}
         </div>
-        {isDemoMode ? (
+        {isReadOnly ? (
           <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            읽기 전용 데모
+            {privateDataMode ? "실제 데이터 · 읽기 전용" : "읽기 전용 데모"}
           </span>
         ) : (
           <UserMenu />

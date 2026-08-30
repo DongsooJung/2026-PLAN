@@ -28,7 +28,7 @@ const subscriptionSchema = z.object({
   cost: z.number().min(0, "금액은 0 이상이어야 합니다"),
   currency: z.string(),
   billing_cycle: z.enum(["monthly", "yearly", "weekly"]),
-  next_billing_date: z.string().min(1, "다음 결제일을 입력하세요"),
+  next_billing_date: z.string().optional(),
   category: z.string().min(1, "카테고리를 선택하세요"),
   status: z.enum(["active", "paused", "cancelled"]),
   memo: z.string().optional(),
@@ -101,7 +101,7 @@ export function SubscriptionForm({
           cost: data.cost,
           currency: data.currency,
           billing_cycle: data.billing_cycle,
-          next_billing_date: data.next_billing_date,
+          next_billing_date: data.next_billing_date || null,
           category: data.category as Subscription["category"],
           status: data.status,
           memo: data.memo || null,
@@ -120,7 +120,7 @@ export function SubscriptionForm({
           cost: data.cost,
           currency: data.currency,
           billing_cycle: data.billing_cycle,
-          next_billing_date: data.next_billing_date,
+          next_billing_date: data.next_billing_date || null,
           category: data.category as Subscription["category"],
           icon_url: null,
           status: data.status,
@@ -233,17 +233,15 @@ export function SubscriptionForm({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="next_billing_date">다음 결제일 *</Label>
+          <Label htmlFor="next_billing_date">다음 결제일</Label>
           <Input
             id="next_billing_date"
             type="date"
             {...register("next_billing_date")}
           />
-          {errors.next_billing_date && (
-            <p className="text-xs text-destructive">
-              {errors.next_billing_date.message}
-            </p>
-          )}
+          <p className="text-xs text-muted-foreground">
+            알 수 없으면 비워두세요.
+          </p>
         </div>
       </div>
 

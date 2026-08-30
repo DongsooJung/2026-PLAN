@@ -28,8 +28,10 @@ export function formatCurrency(
   }).format(amount);
 }
 
-export function daysUntil(dateStr: string): number {
+export function daysUntil(dateStr: string | null): number | null {
+  if (!dateStr) return null;
   const target = new Date(dateStr);
+  if (Number.isNaN(target.getTime())) return null;
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   target.setHours(0, 0, 0, 0);
@@ -38,12 +40,15 @@ export function daysUntil(dateStr: string): number {
   );
 }
 
-export function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "미등록";
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return "미등록";
   return new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(new Date(dateStr));
+  }).format(date);
 }
 
 export function downloadBlob(blob: Blob, filename: string) {

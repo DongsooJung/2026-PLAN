@@ -17,22 +17,27 @@ export function SummaryCards({ subscriptions }: SummaryCardsProps) {
     (s) => s.status === "active"
   );
 
-  const totalMonthlyCost = activeSubscriptions.reduce(
-    (sum, s) =>
-      sum +
-      toMonthlyCost(
-        Number(s.cost),
-        s.billing_cycle as "monthly" | "yearly" | "weekly"
-      ),
-    0
-  );
+  const monthlyTotals = Array.from(
+    activeSubscriptions.reduce((totals, subscription) => {
+      totals.set(
+        subscription.currency,
+        (totals.get(subscription.currency) ?? 0) +
+          toMonthlyCost(Number(subscription.cost), subscription.billing_cycle)
+      );
+      return totals;
+    }, new Map<string, number>())
+  ).sort(([currencyA], [currencyB]) => currencyA.localeCompare(currencyB));
 
   const upcoming = activeSubscriptions
-    .filter((s) => daysUntil(s.next_billing_date) >= 0)
-    .sort(
-      (a, b) =>
-        daysUntil(a.next_billing_date) - daysUntil(b.next_billing_date)
-    )[0];
+    .map((subscription) => ({
+      subscription,
+      days: daysUntil(subscription.next_billing_date),
+    }))
+    .filter(
+      (item): item is { subscription: Subscription; days: number } =>
+        item.days !== null && item.days >= 0
+    )
+    .sort((a, b) => a.days - b.days)[0];
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -42,8 +47,12 @@ export function SummaryCards({ subscriptions }: SummaryCardsProps) {
           <Wallet className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            {formatCurrency(totalMonthlyCost)}
+          <div className="space-y-1 text-2xl font-bold">
+            {monthlyTotals.length > 0
+              ? monthlyTotals.map(([currency, total]) => (
+                  <div key={currency}>{formatCurrency(total, currency)}</div>
+                ))
+              : "-"}
           </div>
           <p className="text-xs text-muted-foreground">
             모든 활성 구독의 월간 환산 비용
@@ -75,18 +84,18 @@ export function SummaryCards({ subscriptions }: SummaryCardsProps) {
           {upcoming ? (
             <>
               <div className="text-2xl font-bold">
-                D-{daysUntil(upcoming.next_billing_date)}
+                D-{upcoming.days}
               </div>
               <p className="text-xs text-muted-foreground">
-                {upcoming.service_name} &middot;{" "}
-                {formatDate(upcoming.next_billing_date)}
+                {upcoming.subscription.service_name} &middot;{" "}
+                {formatDate(upcoming.subscription.next_billing_date)}
               </p>
             </>
           ) : (
             <>
               <div className="text-2xl font-bold">-</div>
               <p className="text-xs text-muted-foreground">
-                예정된 결제가 없습니다
+                결제일이 등록된 예정 항목이 없습니다
               </p>
             </>
           )}

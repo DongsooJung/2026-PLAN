@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import type { Subscription } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/constants";
@@ -29,9 +28,10 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
 
-  const subscriptionsByDay = useMemo(() => {
+  const subscriptionsByDay = (() => {
     const map: Record<number, Subscription[]> = {};
     subscriptions.forEach((sub) => {
+      if (!sub.next_billing_date) return;
       const date = new Date(sub.next_billing_date);
       if (date.getFullYear() === year && date.getMonth() === month) {
         const day = date.getDate();
@@ -40,7 +40,7 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
       }
     });
     return map;
-  }, [subscriptions, year, month]);
+  })();
 
   const prevMonth = () => {
     setCurrentMonth(new Date(year, month - 1, 1));
@@ -57,6 +57,9 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
     today.getDate() === day;
 
   const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+  const undatedSubscriptions = subscriptions.filter(
+    (subscription) => subscription.next_billing_date === null
+  );
 
   return (
     <Card>
@@ -74,6 +77,11 @@ export function CalendarView({ subscriptions }: CalendarViewProps) {
         </div>
       </CardHeader>
       <CardContent>
+        {undatedSubscriptions.length > 0 && (
+          <div className="mb-4 rounded-md border border-dashed px-3 py-2 text-sm text-muted-foreground">
+            결제일 미등록 {undatedSubscriptions.length}건은 달력에서 제외됩니다.
+          </div>
+        )}
         <div className="grid grid-cols-7 gap-px">
           {dayNames.map((name) => (
             <div

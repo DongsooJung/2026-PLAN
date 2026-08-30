@@ -64,6 +64,8 @@ export function SubscriptionList({
           case "name":
             return a.service_name.localeCompare(b.service_name, "ko-KR");
           case "billing-date":
+            if (a.next_billing_date === null) return b.next_billing_date === null ? 0 : 1;
+            if (b.next_billing_date === null) return -1;
             return a.next_billing_date.localeCompare(b.next_billing_date);
         }
       });

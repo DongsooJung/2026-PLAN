@@ -4,6 +4,15 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { Subscription } from "@/lib/types";
 
+function assertSubscriptionsWritable() {
+  if (
+    process.env.SUBSCRIPTIONS_JSON !== undefined ||
+    process.env.NEXT_PUBLIC_DEMO_MODE === "true"
+  ) {
+    throw new Error("읽기 전용 구독 데이터는 변경할 수 없습니다");
+  }
+}
+
 export async function getSubscriptions(): Promise<Subscription[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -18,6 +27,7 @@ export async function getSubscriptions(): Promise<Subscription[]> {
 export async function createSubscription(
   formData: Omit<Subscription, "id" | "created_at" | "updated_at">
 ) {
+  assertSubscriptionsWritable();
   const supabase = await createClient();
   const { error } = await supabase
     .from("subscriptions")
@@ -31,6 +41,7 @@ export async function updateSubscription(
   id: string,
   data: Partial<Omit<Subscription, "id" | "user_id" | "created_at" | "updated_at">>
 ) {
+  assertSubscriptionsWritable();
   const supabase = await createClient();
   const { error } = await supabase
     .from("subscriptions")
@@ -42,6 +53,7 @@ export async function updateSubscription(
 }
 
 export async function deleteSubscription(id: string) {
+  assertSubscriptionsWritable();
   const supabase = await createClient();
   const { error } = await supabase
     .from("subscriptions")

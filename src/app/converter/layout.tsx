@@ -7,9 +7,11 @@ export default function ConverterLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const privateDataMode = process.env.SUBSCRIPTIONS_JSON !== undefined;
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header privateDataMode={privateDataMode} />
       <main className="flex-1">{children}</main>
     </div>
   );

@@ -47,13 +47,15 @@ export function NotificationBell({ subscriptions }: NotificationBellProps) {
     .filter((s) => s.status === "active")
     .filter((s) => {
       const days = daysUntil(s.next_billing_date);
-      return days >= 0 && days <= settings.daysBeforeBilling;
+      return days !== null && days >= 0 && days <= settings.daysBeforeBilling;
     })
     .filter((s) => !settings.dismissedIds.includes(s.id))
-    .sort(
-      (a, b) =>
-        daysUntil(a.next_billing_date) - daysUntil(b.next_billing_date)
-    );
+    .sort((a, b) => {
+      const aDays = daysUntil(a.next_billing_date);
+      const bDays = daysUntil(b.next_billing_date);
+      return (aDays ?? Number.POSITIVE_INFINITY) -
+        (bDays ?? Number.POSITIVE_INFINITY);
+    });
 
   const alertCount = settings.enabled ? upcomingAlerts.length : 0;
 
@@ -72,6 +74,7 @@ export function NotificationBell({ subscriptions }: NotificationBellProps) {
     if (Notification.permission === "granted") {
       const sub = upcomingAlerts[0];
       const days = daysUntil(sub.next_billing_date);
+      if (days === null) return;
       new Notification("결제일 알림", {
         body:
           days === 0
@@ -194,6 +197,7 @@ export function NotificationBell({ subscriptions }: NotificationBellProps) {
             <ul className="max-h-64 overflow-y-auto">
               {upcomingAlerts.map((sub) => {
                 const days = daysUntil(sub.next_billing_date);
+                if (days === null) return null;
                 return (
                   <li
                     key={sub.id}

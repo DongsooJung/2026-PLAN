@@ -33,7 +33,7 @@ export function subscriptionsToCsv(subscriptions: Subscription[]): string {
       Number(subscription.cost),
       subscription.currency,
       billingCycle ?? subscription.billing_cycle,
-      subscription.next_billing_date,
+      subscription.next_billing_date ?? "미등록",
       subscription.category,
       status ?? subscription.status,
       subscription.memo,

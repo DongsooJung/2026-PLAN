@@ -18,7 +18,7 @@ export interface Subscription {
   cost: number;
   currency: string;
   billing_cycle: BillingCycle;
-  next_billing_date: string;
+  next_billing_date: string | null;
   category: Category;
   icon_url: string | null;
   status: SubscriptionStatus;
