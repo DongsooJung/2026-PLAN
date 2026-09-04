@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const APP_ORIGIN = "https://2026-plan-git-main-stargate2.vercel.app";
+const APP_ORIGIN = process.env.STARGATE_AUTH_ORIGIN || "https://2026-plan.vercel.app";
 const SITE_ORIGIN = "https://www.stargateedu.co.kr";
 
 export async function GET(request: NextRequest) {
