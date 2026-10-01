@@ -20,9 +20,15 @@ function safeEqual(actual: string, expected: string): boolean {
   return mismatch === 0;
 }
 
-function hasValidBasicAuth(request: NextRequest): boolean {
-  const expectedUser = process.env.DASHBOARD_BASIC_USER;
-  const expectedPassword = process.env.DASHBOARD_BASIC_PASSWORD;
+function hasValidBasicAuth(request: NextRequest, scope: "dashboard" | "commander" = "dashboard"): boolean {
+  const expectedUser =
+    scope === "commander"
+      ? process.env.COMMANDER_BASIC_USER || process.env.DASHBOARD_BASIC_USER
+      : process.env.DASHBOARD_BASIC_USER;
+  const expectedPassword =
+    scope === "commander"
+      ? process.env.COMMANDER_BASIC_PASSWORD || process.env.DASHBOARD_BASIC_PASSWORD
+      : process.env.DASHBOARD_BASIC_PASSWORD;
   if (!expectedUser || !expectedPassword) return false;
 
   const authorization = request.headers.get("authorization");
@@ -47,6 +53,16 @@ function hasValidBasicAuth(request: NextRequest): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+  const isCommander = request.nextUrl.pathname.startsWith("/commander");
+
+  // CEO situation room: always protected server-side, independent of app auth mode.
+  // Dedicated COMMANDER_* credentials may be used; otherwise the existing dashboard
+  // credentials are reused. Missing credentials fail closed with HTTP 401.
+  if (isCommander) {
+    if (!hasValidBasicAuth(request, "commander")) return unauthorized();
+    return NextResponse.next({ request });
+  }
+
   if (process.env.SUBSCRIPTIONS_JSON !== undefined) {
     if (!hasValidBasicAuth(request)) return unauthorized();
 
@@ -108,5 +124,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/converter/:path*"],
+  matcher: ["/", "/dashboard/:path*", "/converter/:path*", "/commander/:path*"],
 };
