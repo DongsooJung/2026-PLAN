@@ -60,7 +60,11 @@ export async function middleware(request: NextRequest) {
   // credentials are reused. Missing credentials fail closed with HTTP 401.
   if (isCommander) {
     if (!hasValidBasicAuth(request, "commander")) return unauthorized();
-    return NextResponse.next({ request });
+    const commanderResponse = NextResponse.next({ request });
+    commanderResponse.headers.set("Cache-Control", "private, no-store, max-age=0");
+    commanderResponse.headers.set("Pragma", "no-cache");
+    commanderResponse.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    return commanderResponse;
   }
 
   if (process.env.SUBSCRIPTIONS_JSON !== undefined) {
