@@ -68,8 +68,8 @@ function formatKrw(value: number) {
 }
 
 function formatNumber(value: number | null | undefined) {
-  if (!Number.isFinite(value)) return "—";
-  return new Intl.NumberFormat("ko-KR").format(Number(value));
+  if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+  return new Intl.NumberFormat("ko-KR").format(value);
 }
 
 function kstTimestamp() {
@@ -159,7 +159,7 @@ export default async function CommanderPage() {
               {formatNumber(activeProjects)}
             </div>
             <div className="mt-2 text-xs text-slate-500">
-              평균 진행률 {Number.isFinite(averageProgress) ? `${averageProgress}%` : "—"} · Notion {notionState}
+              평균 진행률 {typeof averageProgress === "number" && Number.isFinite(averageProgress) ? `${averageProgress}%` : "—"} · Notion {notionState}
             </div>
           </article>
 
